@@ -92,9 +92,9 @@ if __name__=='__main__':
 
 
     # train_args.load_ckpt="E:/nyu_rawdata.pth"
-    train_args.load_ckpt="E:/rd/tools/outputs/Mar11-08-13-45_DESKTOP-V6VNC56/ckpt/epoch0_step10.pth"
-    train_args.resume=True
-    train_args.refine=True
+    # train_args.load_ckpt="E:/rd/tools/outputs/Mar11-08-13-45_DESKTOP-V6VNC56/ckpt/epoch0_step10.pth"
+    # train_args.resume=True
+    # train_args.refine=True
 
 
 
