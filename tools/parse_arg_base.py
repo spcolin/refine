@@ -7,8 +7,7 @@ class BaseOptions():
     def initialize(self, parser):
 
         # ----------------added args---------------------
-        parser.add_argument('--anno_pack_path', help='Path to package containing annotation json files',
-                            default="E:/anno")
+        parser.add_argument('--anno_pack_path', help='Path to package containing annotation json files',default="E:/anno")
         # parser.add_argument('--anno_pack_path', help='Path to package containing annotation json files',default="E:/rd/datasets/NYUDV2/annotations")
 
         parser.add_argument('--refine', default=False, help='start refine')
