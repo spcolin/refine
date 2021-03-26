@@ -65,7 +65,7 @@ def train(train_dataloader, model, epoch, loss_func,
         if step % cfg.TRAIN.SNAPSHOT_ITERS == 0 and step != 0:
             save_ckpt(train_args, step, epoch, model, optimizer.optimizer, scheduler, val_err[0])
 
-        break
+        # break
 
 def val(val_dataloader, model):
     """
@@ -92,9 +92,9 @@ if __name__=='__main__':
 
 
     # train_args.load_ckpt="E:/nyu_rawdata.pth"
-    train_args.load_ckpt="E:/rd/tools/outputs/Mar11-08-13-45_DESKTOP-V6VNC56/ckpt/epoch0_step10.pth"
-    train_args.resume=True
-    train_args.refine=True
+    # train_args.load_ckpt="E:/rd/tools/outputs/Mar11-08-13-45_DESKTOP-V6VNC56/ckpt/epoch0_step10.pth"
+    # train_args.resume=True
+    # train_args.refine=True
 
 
 
@@ -167,7 +167,7 @@ if __name__=='__main__':
                   val_dataloader, val_err, ignore_step)
             ignore_step = -1
 
-            break
+            # break
 
     except (RuntimeError, KeyboardInterrupt):
 

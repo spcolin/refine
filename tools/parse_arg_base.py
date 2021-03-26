@@ -7,8 +7,8 @@ class BaseOptions():
     def initialize(self, parser):
 
         # ----------------added args---------------------
-        parser.add_argument('--anno_pack_path', help='Path to package containing annotation json files',default="E:/anno")
-        # parser.add_argument('--anno_pack_path', help='Path to package containing annotation json files',default="E:/rd/datasets/NYUDV2/annotations")
+        # parser.add_argument('--anno_pack_path', help='Path to package containing annotation json files',default="E:/anno")
+        parser.add_argument('--anno_pack_path', help='Path to package containing annotation json files',default="E:/rd/datasets/NYUDV2/annotations")
 
         parser.add_argument('--refine', default=False, help='start refine')
         # ----------------added end----------------------
@@ -24,7 +24,7 @@ class BaseOptions():
         parser.add_argument('--epoch', default=10, type=int, help='Set training epochs')
         parser.add_argument('--start_epoch', default=0, type=int, help='Set training epochs')
         parser.add_argument('--start_step', default=0, type=int, help='Set training steps')
-        parser.add_argument('--thread', default=4, type=int, help='Thread for loading data')
+        parser.add_argument('--thread', default=0, type=int, help='Thread for loading data')
         parser.add_argument('--use_tfboard', default=True, help='Tensorboard to log training info')
         parser.add_argument('--results_dir', type=str, default='./evaluation', help='Output dir')
         self.initialized = True

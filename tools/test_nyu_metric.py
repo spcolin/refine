@@ -13,11 +13,21 @@ from lib.models.metric_depth_model import MetricDepthModel
 from lib.utils.logging import setup_logging, SmoothedValue
 import matplotlib.pyplot as plt
 
+
+# from signal import signal, SIGPIPE, SIG_DFL
+#
+# # 让 python 忽略 SIGPIPE 信号，并且不抛出异常
+# signal(SIGPIPE,SIG_DFL)
+
+
 logger = setup_logging(__name__)
 
-if __name__ == '__main__':
+
+
+# if __name__ == '__main__':
+def test(model_path):
     test_args = TestOptions().parse()
-    test_args.thread = 1
+    test_args.thread = 0
     test_args.batchsize = 1
     merge_cfg_from_file(test_args)
 
@@ -29,11 +39,15 @@ if __name__ == '__main__':
 
     model.eval()
 
+    test_args.load_ckpt = model_path
+
+
+
     # load checkpoint
     if test_args.load_ckpt:
         load_ckpt(test_args, model)
     model.cuda()
-    model = torch.nn.DataParallel(model)
+    # model = torch.nn.DataParallel(model)
 
     # test
     smoothed_absRel = SmoothedValue(test_datasize)
@@ -54,7 +68,7 @@ if __name__ == '__main__':
                          'err_log10': smoothed_log10, 'err_whdr': smoothed_whdr}
 
     for i, data in enumerate(data_loader):
-        out = model.module.inference(data)
+        out = model.inference(data)
         pred_depth = torch.squeeze(out['b_fake'])
         img_path = data['A_paths']
         invalid_side = data['invalid_side'][0]
@@ -72,16 +86,51 @@ if __name__ == '__main__':
         #plt.imsave(os.path.join(image_dir, 'd_' + img_name), pred_depth, cmap='rainbow')
         #cv2.imwrite(os.path.join(image_dir, 'rgb_' + img_name), data['A_raw'].numpy().squeeze())
 
-        print('processing (%04d)-th image... %s' % (i, img_path))
+        # print('processing (%04d)-th image... %s' % (i, img_path))
 
 
-    print("###############absREL ERROR: %f", smoothed_criteria['err_absRel'].GetGlobalAverageValue())
-    print("###############silog ERROR: %f", np.sqrt(smoothed_criteria['err_silog2'].GetGlobalAverageValue() - (
-        smoothed_criteria['err_silog'].GetGlobalAverageValue()) ** 2))
-    print("###############log10 ERROR: %f", smoothed_criteria['err_log10'].GetGlobalAverageValue())
-    print("###############RMS ERROR: %f", np.sqrt(smoothed_criteria['err_rms'].GetGlobalAverageValue()))
-    print("###############delta_1 ERROR: %f", smoothed_criteria['err_delta1'].GetGlobalAverageValue())
-    print("###############delta_2 ERROR: %f", smoothed_criteria['err_delta2'].GetGlobalAverageValue())
-    print("###############delta_3 ERROR: %f", smoothed_criteria['err_delta3'].GetGlobalAverageValue())
-    print("###############squaRel ERROR: %f", smoothed_criteria['err_squaRel'].GetGlobalAverageValue())
-    print("###############logRms ERROR: %f", np.sqrt(smoothed_criteria['err_logRms'].GetGlobalAverageValue()))
+    # print("###############absREL ERROR: %f", smoothed_criteria['err_absRel'].GetGlobalAverageValue())
+    # print("###############silog ERROR: %f", np.sqrt(smoothed_criteria['err_silog2'].GetGlobalAverageValue() - (
+    #     smoothed_criteria['err_silog'].GetGlobalAverageValue()) ** 2))
+    # print("###############log10 ERROR: %f", smoothed_criteria['err_log10'].GetGlobalAverageValue())
+    # print("###############RMS ERROR: %f", np.sqrt(smoothed_criteria['err_rms'].GetGlobalAverageValue()))
+    # print("###############delta_1 ERROR: %f", smoothed_criteria['err_delta1'].GetGlobalAverageValue())
+    # print("###############delta_2 ERROR: %f", smoothed_criteria['err_delta2'].GetGlobalAverageValue())
+    # print("###############delta_3 ERROR: %f", smoothed_criteria['err_delta3'].GetGlobalAverageValue())
+    # print("###############squaRel ERROR: %f", smoothed_criteria['err_squaRel'].GetGlobalAverageValue())
+    # print("###############logRms ERROR: %f", np.sqrt(smoothed_criteria['err_logRms'].GetGlobalAverageValue()))
+
+    f.write("tested model:"+model_path)
+    f.write('\n')
+    f.write("###############absREL ERROR:"+ str(smoothed_criteria['err_absRel'].GetGlobalAverageValue()))
+    f.write('\n')
+    f.write("###############silog ERROR:" +str(np.sqrt(smoothed_criteria['err_silog2'].GetGlobalAverageValue() - (
+        smoothed_criteria['err_silog'].GetGlobalAverageValue()) ** 2)))
+    f.write('\n')
+    f.write("###############log10 ERROR:" +str(smoothed_criteria['err_log10'].GetGlobalAverageValue()))
+    f.write('\n')
+    f.write("###############RMS ERROR:" +str(np.sqrt(smoothed_criteria['err_rms'].GetGlobalAverageValue())))
+    f.write('\n')
+    f.write("###############delta_1 ERROR:" +str(smoothed_criteria['err_delta1'].GetGlobalAverageValue()))
+    f.write('\n')
+    f.write("###############delta_2 ERROR:" +str(smoothed_criteria['err_delta2'].GetGlobalAverageValue()))
+    f.write('\n')
+    f.write("###############delta_3 ERROR:" +str(smoothed_criteria['err_delta3'].GetGlobalAverageValue()))
+    f.write('\n')
+    f.write("###############squaRel ERROR:" +str(smoothed_criteria['err_squaRel'].GetGlobalAverageValue()))
+    f.write('\n')
+    f.write("###############logRms ERROR:" +str(np.sqrt(smoothed_criteria['err_logRms'].GetGlobalAverageValue())))
+    f.write('\n')
+    f.write('-----------------------------------------------------------------------------')
+    f.write('\n')
+
+model_package="E:/refine/tools/outputs/Mar25-11-13-22_DESKTOP-V6VNC56/ckpt/"
+
+model_list=os.listdir(model_package)
+# f=open("/home/colin/baseline_rst.txt","w")
+f=open("E:/ft_rst.txt","w")
+
+for i in model_list:
+    test(model_package+i)
+
+f.close()
